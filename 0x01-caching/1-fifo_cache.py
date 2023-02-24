@@ -1,53 +1,40 @@
 #!/usr/bin/env python3
+""" BaseCaching module
 """
-This module contains a class FIFOCache
-that inherits from BaseCaching. The class
-contains a method that implements the FIFO
-caching algorithm that discards the first item
-put in the cache
-"""
-
 from base_caching import BaseCaching
 
 
 class FIFOCache(BaseCaching):
     """
-    The class definition of FIFOCache
+    FIFOCache defines a FIFO caching system
     """
+
     def __init__(self):
         """
-        This method is the constructor for FIFOCache
-        that inherits from the Parent class
+        Initialize the class with the parent's init method
         """
         super().__init__()
+        self.order = []
 
     def put(self, key, item):
         """
-        This method adds a key-value element
-        to the cache_data dictionary
-        Args
-            key: the key of the item to add
-            item: the value of the item
-        Return:
-            none
+        Cache a key-value pair
         """
-        if key is not None and item is not None:
-            self.cache_data.update({key: item})
-
-        if len(self.cache_data) > BaseCaching.MAX_ITEMS:
-            first_key = next(iter(self.cache_data))
-            self.cache_data.pop(first_key)
-            print(f'DISCARD: {first_key}')
+        if key is None or item is None:
+            pass
+        else:
+            length = len(self.cache_data)
+            if length >= BaseCaching.MAX_ITEMS and key not in self.cache_data:
+                print("DISCARD: {}".format(self.order[0]))
+                del self.cache_data[self.order[0]]
+                del self.order[0]
+            self.order.append(key)
+            self.cache_data[key] = item
 
     def get(self, key):
         """
-        This method returns the value in self.cache_data
-        linked to key
-        Args:
-            key: the key to get
-        Return
-            the value in self.cache_data linked to key
+        Return the value linked to a given key, or None
         """
-        if key is None or key not in self.cache_data:
-            return None
-        return self.cache_data.get(key)
+        if key is not None and key in self.cache_data.keys():
+            return self.cache_data[key]
+        return None
